@@ -4,7 +4,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 
-import { buildEntry, installDesktop, pickEmail, type ResolvedPaths } from "./install.ts";
+import {
+  assertServerBuilt,
+  buildEntry,
+  installDesktop,
+  pickEmail,
+  resolvePaths,
+  type ResolvedPaths,
+} from "./install.ts";
 
 const PATHS: ResolvedPaths = {
   node: "/opt/node/bin/node",
@@ -28,6 +35,26 @@ async function tempConfig(contents?: string): Promise<string> {
 async function readConfig(path: string): Promise<DesktopConfig> {
   return JSON.parse(await readFile(path, "utf8")) as DesktopConfig;
 }
+
+test("resolves to dist/index.js even when running from src/", () => {
+  // Regression: this test file lives in src/cli/, which is exactly the case
+  // that was broken. Computing `../index.js` from here yields src/index.js —
+  // a file that never exists, since the source is .ts. The client then reports
+  // only "Server disconnected", with nothing to go on.
+  const { server } = resolvePaths();
+  assert.ok(
+    server.endsWith(join("dist", "index.js")),
+    `expected a dist/ path, got ${server}`,
+  );
+  assert.doesNotMatch(server, /[/\\]src[/\\]/);
+});
+
+test("refuses to proceed when the server has not been built", () => {
+  assert.throws(
+    () => assertServerBuilt({ node: "/bin/node", server: "/nowhere/dist/index.js" }),
+    /npm run build/,
+  );
+});
 
 test("the written entry never contains the password", () => {
   const entry = buildEntry(PATHS, "follower@example.test");
@@ -81,6 +108,27 @@ test("backs up an existing config before rewriting it", async () => {
   assert.ok(siblings.some((name) => name.includes(".bak-")));
 });
 
+test("re-running with nothing to change writes nothing and makes no backup", async () => {
+  // Otherwise every retry litters the user's Claude directory with identical
+  // copies — seven of them accumulated while debugging a bad path.
+  const configPath = await tempConfig();
+  await installDesktop({ email: "a@example.test", paths: PATHS, configPath, now: NOW });
+  const first = await readFile(configPath, "utf8");
+
+  const second = await installDesktop({
+    email: "a@example.test",
+    paths: PATHS,
+    configPath,
+    now: NOW,
+  });
+
+  assert.equal(second.changed, false);
+  assert.equal(second.backup, null);
+  assert.equal(await readFile(configPath, "utf8"), first);
+  const siblings = await readdir(join(configPath, ".."));
+  assert.equal(siblings.filter((name) => name.includes(".bak-")).length, 0);
+});
+
 test("does not create a backup when there was no config", async () => {
   const configPath = await tempConfig();
   const { backup } = await installDesktop({
@@ -108,7 +156,7 @@ test("re-running replaces our entry rather than duplicating it", async () => {
   await installDesktop({ email: "b@example.test", paths: PATHS, configPath, now: NOW });
 
   const written = await readConfig(configPath);
-  assert.equal(Object.keys(written.mcpServers ?? {}).length, 1);
+  assert.equal(Object.keys(written.mcpServers ?? {}).length, 1, "no duplicate entry");
   assert.equal(
     written.mcpServers?.["mcp-freestyle"]?.env?.["LIBRELINKUP_EMAIL"],
     "b@example.test",

@@ -2,7 +2,12 @@
 import { configFromEnv } from "../config.ts";
 import { storePassword, storedAccounts } from "../credentials.ts";
 import { ask, askSecret, confirm } from "./prompt.ts";
-import { installDesktop, resolvePaths, printCodeInstructions } from "./install.ts";
+import {
+  assertServerBuilt,
+  installDesktop,
+  printCodeInstructions,
+  resolvePaths,
+} from "./install.ts";
 import { UpstreamContractError } from "../upstream/errors.ts";
 import { login } from "../upstream/librelinkup.ts";
 
@@ -68,8 +73,11 @@ async function main(): Promise<void> {
   storePassword(email, password);
   process.stdout.write(`Password stored in your OS keychain for ${email}.\n\n`);
   if (await confirm("Wire this into Claude Desktop now?")) {
-    const paths = resolvePaths();
     try {
+      const paths = resolvePaths();
+      // Never write a config pointing at a file that isn't there: the client
+      // reports only "Server disconnected", with nothing to go on.
+      assertServerBuilt(paths);
       const { configPath, backup } = await installDesktop({ email, paths });
       process.stdout.write(`\nUpdated ${configPath}\n`);
       if (backup) process.stdout.write(`Previous config backed up to ${backup}\n`);

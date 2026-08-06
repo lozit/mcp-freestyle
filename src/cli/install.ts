@@ -23,10 +23,40 @@ export interface ResolvedPaths {
   readonly server: string;
 }
 
+/**
+ * Locate the built server entry.
+ *
+ * This module runs from two places — `dist/cli/` when installed, and `src/cli/`
+ * when driven by `npm run login` / `npm run install:claude` from a clone. A path
+ * computed as `../index.js` is only correct in the first case; in the second it
+ * yields `src/index.js`, which never exists (the source is `.ts`). So we find
+ * the package root and go to `dist/` from there, which is right either way.
+ */
 export function resolvePaths(): ResolvedPaths {
-  // This file runs as dist/cli/install.js; the server entry is dist/index.js.
-  const here = dirname(fileURLToPath(import.meta.url));
-  return { node: process.execPath, server: resolve(here, "..", "index.js") };
+  let dir = dirname(fileURLToPath(import.meta.url));
+  while (!existsSync(join(dir, "package.json"))) {
+    const parent = dirname(dir);
+    if (parent === dir) {
+      throw new Error(`Could not locate the package root above ${import.meta.url}`);
+    }
+    dir = parent;
+  }
+  return { node: process.execPath, server: join(dir, "dist", "index.js") };
+}
+
+/**
+ * Fail before writing a config that points at a file which isn't there.
+ *
+ * Every caller must run this. A bad path produces "Server disconnected" in the
+ * MCP client with no further detail, which is a miserable thing to debug.
+ */
+export function assertServerBuilt(paths: ResolvedPaths): void {
+  if (!existsSync(paths.server)) {
+    throw new Error(
+      `The server has not been built: ${paths.server} does not exist.\n` +
+        `Run \`npm run build\` from the clone, then retry.`,
+    );
+  }
 }
 
 export function desktopConfigPath(): string {
@@ -81,18 +111,24 @@ export async function installDesktop(opts: {
   paths: ResolvedPaths;
   configPath?: string;
   now?: Date;
-}): Promise<{ configPath: string; backup: string | null }> {
+}): Promise<{ configPath: string; backup: string | null; changed: boolean }> {
   const configPath = opts.configPath ?? desktopConfigPath();
   await mkdir(dirname(configPath), { recursive: true });
-  const backup = await backupOnce(configPath, opts.now ?? new Date());
 
+  const before = existsSync(configPath) ? await readFile(configPath, "utf8") : null;
   const config = await readJsonOrEmpty(configPath);
   const servers = (config["mcpServers"] as Record<string, unknown> | undefined) ?? {};
   servers["mcp-freestyle"] = buildEntry(opts.paths, opts.email);
   config["mcpServers"] = servers;
+  const after = `${JSON.stringify(config, null, 2)}\n`;
 
-  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
-  return { configPath, backup };
+  // Re-running with nothing to change should be a no-op. Backing up regardless
+  // just litters the user's Claude directory with identical copies.
+  if (before === after) return { configPath, backup: null, changed: false };
+
+  const backup = await backupOnce(configPath, opts.now ?? new Date());
+  await writeFile(configPath, after, "utf8");
+  return { configPath, backup, changed: true };
 }
 
 export function printCodeInstructions(paths: ResolvedPaths, email: string): void {
@@ -136,24 +172,22 @@ export function pickEmail(
 async function main(): Promise<void> {
   const targets = parseTargets(process.argv.slice(2));
   const paths = resolvePaths();
-
-  if (!existsSync(paths.server)) {
-    throw new Error(
-      `Server entrypoint missing at ${paths.server}. Run \`npm run build\` from a clone, ` +
-        `or reinstall the package.`,
-    );
-  }
+  assertServerBuilt(paths);
 
   const email = pickEmail(process.env, storedAccounts());
 
   for (const target of targets) {
     if (target === "desktop") {
-      const { configPath, backup } = await installDesktop({ email, paths });
-      process.stdout.write(`Updated ${configPath}\n`);
-      if (backup) process.stdout.write(`Previous config backed up to ${backup}\n`);
-      process.stdout.write(
-        "Quit Claude Desktop fully (⌘Q on macOS) and relaunch to pick up the change.\n",
-      );
+      const { configPath, backup, changed } = await installDesktop({ email, paths });
+      if (!changed) {
+        process.stdout.write(`Already up to date: ${configPath}\n`);
+      } else {
+        process.stdout.write(`Updated ${configPath}\n`);
+        if (backup) process.stdout.write(`Previous config backed up to ${backup}\n`);
+        process.stdout.write(
+          "Quit Claude Desktop fully (⌘Q on macOS) and relaunch to pick up the change.\n",
+        );
+      }
     } else {
       printCodeInstructions(paths, email);
     }
