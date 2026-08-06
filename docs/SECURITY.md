@@ -11,9 +11,22 @@ For the **why** behind structural decisions → see `docs/decisions/`.
 
 ## Authentication
 
-- Method: `<fill in>` (depends on the data source — decide as an ADR)
-- Session / token handling: `<fill in>`
-- Reset, MFA: `<fill in>`
+- Method: sign-in to the **LibreLinkUp** service with a *follower* account owned by the user
+  ([ADR 0002](decisions/0002-data-source-librelinkup.md)). We authenticate *to* an upstream
+  service; we do not authenticate anyone *to* us.
+- Session / token handling: the upstream session token is held **in memory only** — never
+  written to a tracked file, never logged. Expiry must trigger a clean re-login rather than a
+  confusing mid-query failure.
+- **The token is valid ~180 days and cannot be revoked** (verified 2026-08-06:
+  `duration: 15552000000` ms). There is no logout, no revocation endpoint, no way to kill a
+  leaked token — changing the Abbott account password is the only recourse, and even that is
+  unverified. This makes token leakage a *six-month* exposure, and is why it must never touch
+  a log, a fixture, an error message, or a bug report.
+- A **rotated ticket** is returned at the root of every authenticated response. Capture it;
+  do not reuse the login token indefinitely.
+- Reset, MFA: owned entirely by Abbott's account system. Out of this project's scope.
+- Exact auth flow and required headers: **to verify against a real account before coding** —
+  ADR 0002 records which route, not a validated contract.
 
 ## Authorization / access control
 
@@ -27,11 +40,19 @@ For the **why** behind structural decisions → see `docs/decisions/`.
   account identifier for the data source.
 - Legal basis for processing: self-processing by the data subject on their own device.
   Revisit if the project ever processes someone else's data.
-- Retention period: `<fill in>` — depends on whether anything is cached locally.
+- Retention period: **none — nothing is stored.** V1 is pass-through: readings are fetched,
+  normalized, returned, and forgotten. No cache, no database, no files. This is the cheapest
+  possible answer to retention and it is the one V1 gives.
 - User rights (access, deletion, export): the user holds the data on their own machine;
-  document how to wipe the local cache once one exists.
-- Processors / transfers outside the EU: `<fill in>` — whatever upstream service the data
-  is fetched from is a processor. Name it here once decided.
+  document how to wipe the local cache once one exists. Rights against the *upstream* copy
+  are exercised with Abbott, not with us.
+- Processors / transfers: **Abbott (LibreView / LibreLinkUp)** already holds this data before
+  we read it — the user put it there via the LibreLink app, independently of this project.
+  We add no new processor and no new transfer. Verify the account's regional endpoint, since
+  it determines where the data is already stored.
+- **Scope boundary that makes this defensible**: self-access by the data subject to their own
+  data, on their own machine. Turning this into a hosted or multi-user service would change
+  the legal analysis entirely — which is one more reason multi-user is a V1 non-goal.
 
 ## Secrets and configuration
 
@@ -45,8 +66,8 @@ For the **why** behind structural decisions → see `docs/decisions/`.
 - Untrusted inputs (forms, API, uploads) and validation: tool arguments arriving from the
   MCP client, and the upstream response payload. Validate both — a malformed upstream
   response must fail loudly, not silently produce a plausible-looking reading.
-- Encryption in transit / at rest: transport to the upstream service must be TLS. At-rest
-  encryption of any local cache: `<fill in>`.
+- Encryption in transit / at rest: transport to the upstream service is TLS (HTTPS only).
+  At-rest encryption is **not applicable** — nothing is written to disk.
 - Logging and audit: logs must be safe to paste into a bug report — that means no readings
   and no identifiers.
 

@@ -19,10 +19,26 @@ a fixed interval instead of requiring a finger-prick per reading.
 
 **FreeStyle** — The Abbott family of glucose-monitoring products this project reads from.
 
+## F
+
+**Follower account** — A LibreLinkUp account the primary user shares their readings *to*.
+This project signs in as the follower; it never touches the primary account.
+
 ## G
 
 **Glucose reading** — One measurement: a value, a unit, a timestamp, and (usually) a trend
 arrow. In this project a reading is never passed around without its unit.
+
+## L
+
+**LibreLink** — Abbott's phone app that reads the sensor and uploads to LibreView. It is
+**upstream of this project and a prerequisite**, not a component of it.
+
+**LibreLinkUp** — Abbott's sharing service, letting a follower see another user's readings.
+Its API is the project's data source ([ADR 0002](decisions/0002-data-source-librelinkup.md)) —
+**unofficial, undocumented by Abbott, and liable to break**.
+
+**LibreView** — Abbott's cloud where the LibreLink app stores readings.
 
 ## M
 
@@ -33,6 +49,13 @@ an AI agent.
 
 **mmol/L** — Millimoles per litre. The other common glucose unit. `mmol/L ≈ mg/dL / 18.0182`.
 Never assume which unit a source returns.
+
+## N
+
+**Nightscout** — Open-source, self-hosted app ("CGM in the Cloud") that stores and shares CGM
+data behind a documented REST API. **Not used** by this project — considered and rejected in
+[ADR 0002](decisions/0002-data-source-librelinkup.md), kept as the pre-analysed fallback if
+the LibreLinkUp route becomes untenable.
 
 ## R
 

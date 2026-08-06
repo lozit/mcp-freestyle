@@ -9,11 +9,19 @@ Expose a FreeStyle continuous glucose monitor (CGM) to an AI agent through the M
 Protocol, covering **both** altitudes in one server:
 
 - **Real-time read** — the current glucose value and its trend.
-- **History** — readings over a window (hours, days, weeks) and the aggregates built on them.
+- **History** — readings over a window and the aggregates built on them.
 
-Success looks like: asking Claude *"what's my glucose right now?"* or *"how was my
-time-in-range last week?"* and getting an answer grounded in real sensor data, with no
+Success looks like: asking Claude *"what's my glucose right now?"* or *"how has my
+time-in-range been today?"* and getting an answer grounded in real sensor data, with no
 manual export step in between.
+
+> **Horizon amended 2026-08-06.** The original goal said "hours, days, weeks". Verification
+> against the real upstream (ADR 0002) showed the data is not there to support it: the `graph`
+> endpoint caps at ~12 hours, and `logbook` returns discrete events — 14 of 17 being alarms —
+> which are systematically skewed toward out-of-range and unusable for any aggregate. Longer
+> history would require a separate long-running collector, since an MCP stdio server only
+> lives for the duration of a client session. **V1 therefore targets a ~12-hour horizon.**
+> Long-term history is deferred to Milestone 4, not abandoned.
 
 ## Users / personas
 
@@ -42,11 +50,17 @@ is also user #1.
 - **No UI / dashboard.** The MCP server is the only interface; no web app.
 - **No real-time alerts.** No push notifications for hypo/hyper events.
 - **No multi-user support.** One sensor account per installation.
+- **No long-term history.** The ~12-hour upstream horizon is accepted as-is; no local
+  accumulation, no background collector. Deferred to Milestone 4.
 
 ## V1 acceptance criteria
 
-- **MCP tools work end to end** — a "current glucose" tool and a "history over N hours/days"
-  tool both return real sensor data when called from Claude.
+- **MCP tools work end to end** — a "current glucose" tool and a "history over the last N
+  hours" tool (N ≤ ~12) both return real sensor data when called from Claude, and
+  time-in-range is computed over that window against the account's own target band.
+- **The horizon is stated, never implied** — when a requested window exceeds what upstream
+  returns, the answer says what range it actually covers rather than silently aggregating
+  over less.
 - **A third party installs it in under 10 minutes** — another person with a FreeStyle sensor
   clones/installs, supplies their own credentials, and it works following the `README.md`
   alone.

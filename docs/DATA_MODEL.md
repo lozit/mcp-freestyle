@@ -5,9 +5,10 @@
 
 For the **why** behind choices (engine, denormalization...) → see `docs/decisions/`.
 
-> Storage is **not decided yet** — it may be nothing at all (pass-through), a local file, or
-> an embedded DB. Decide it as an ADR before filling this in. The entities below are the
-> expected shape either way.
+> **Storage is nothing.** V1 is pass-through — readings are fetched, normalized, returned,
+> and forgotten. The entities below describe the in-memory shape, not a schema. Persistence
+> arrives only with Milestone 4, if at all ([ADR 0003](decisions/0003-nightscout-as-alternate-source.md)
+> hands that job to Nightscout).
 
 ## Overview
 
@@ -28,11 +29,37 @@ erDiagram
 | Field | Type | Constraints | Description |
 |---|---|---|---|
 | `id` | `string` | PK | Identifier (source id, or derived from timestamp) |
-| `value` | `number` | required | Glucose value — **meaningless without `unit`** |
-| `unit` | `enum` | `mg/dL` \| `mmol/L` | Always stored explicitly, never inferred |
+| `mgPerDl` | `number` | required | Canonical value. See "Units" below — we store one unit, not a value+unit pair |
 | `measured_at` | `timestamp` | required, **UTC** | Instant of measurement; render local, store UTC |
-| `trend` | `enum` | nullable | Trend arrow, when the source provides one |
+| `trend` | `enum` | nullable | Only present on the *current* reading; always null for history |
 | `source` | `string` | required | Where it came from (device / service / import) |
+
+#### Units — resolved by the upstream payload
+
+The upstream always supplies **`ValueInMgPerDl`**, a field whose unit is in its own name,
+alongside the display-preference pair `Value` + `GlucoseUnits` (`1` = mg/dL). The account's
+`alarmRules` confirm the convention by carrying both scales (`th: 250` / `thmm: 13.9`;
+250 ÷ 18.0182 = 13.87 ✓).
+
+So the unit-confusion risk is designed away rather than defended against: **store
+`ValueInMgPerDl` as the single canonical value, and treat the user's unit as a rendering
+concern at the output edge only.** Never persist a bare number whose unit lives elsewhere.
+
+#### Timestamps — which field is authoritative
+
+Each upstream reading carries two unmarked strings in `M/D/YYYY h:mm:ss AM/PM`:
+
+- **`FactoryTimestamp` — UTC. This is the source of truth.**
+- `Timestamp` — already converted to the account's local zone.
+
+Parse `FactoryTimestamp` explicitly as UTC. Never `new Date(str)`, and never derive the zone
+from the delta between the two fields — that delta is the current DST offset (observed 2 h in
+August, it will be 1 h in winter) and encodes nothing durable.
+
+#### Target range comes from upstream
+
+`targetLow` / `targetHigh` (mg/dL) are supplied per account — 70/180 observed. Time-in-range
+does not need a user-configured band; read the account's own.
 
 ### Sensor session
 
@@ -60,7 +87,8 @@ erDiagram
 
 ## Migrations
 
-Where migrations live (folder, tool) and how to create one: `<fill in>`.
+Not applicable — there is no store to migrate. This section exists only so the absence is
+explicit rather than an oversight.
 
 ## Gaps are data
 
