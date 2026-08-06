@@ -1,0 +1,12 @@
+// Typecheck the dev scripts alongside src, without emitting them into dist/.
+// `npm run typecheck` runs both configs.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // Widened from `src` so scripts/ is in scope; nothing is emitted from here.
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts"],
+  "exclude": []
+}

@@ -7,13 +7,23 @@ This file differs from the long-term roadmap: it describes what is happening **n
 
 ## In progress
 
-- [ ] (add the first active tasks here)
+- [ ] **Collect `TrendArrow` evidence** — run `npm run smoke` across a clear rise and a
+      clear fall, and record arrow + slope each time. Two flat/near-flat observations have
+      both shown `3`, which is *consistent with* "steady" but maps nothing else. Do not
+      write the enum until the extremes have been seen.
 
 ## Up next
 
-- [ ] Decide the stack (Node/TypeScript vs Python) → record as ADR `0001`
-- [ ] Decide how sensor data is obtained (cloud API vs local/NFC) → record as ADR `0002`
+- [ ] **Map `TrendArrow`** — carried verbatim as `rawTrendArrow` and deliberately
+      untranslated. Needs verification against a real account; do not guess the enum
+- [ ] Retry on a rate-limited (429/430) response instead of surfacing it raw
+- [ ] Decide packaging: `npm publish` vs git install (ADR 0001 left it open;
+      the `mcp-freestyle` name is free on npm)
+- [ ] Security contact for disclosure (`docs/SECURITY.md`)
+- [ ] Remote git — "open source" stays theoretical until the repo is somewhere
+- [ ] Pick the date/time library and the `Reading` domain type (unit + zone encoded in the type)
 - [ ] Define the MCP tool surface: current reading + historical window
+- [ ] Fill `Setup / Build / Test` in `CLAUDE.md` once the project runs
 
 ## Ideas — to triage
 
@@ -27,6 +37,32 @@ Raw ideas, captured before they're lost (e.g. via `/groundrules:idea`). Not yet 
 
 ## Recently done
 
+- [x] **Milestone 1 validated end to end against the real account** (2026-08-06):
+      48 readings over 11.9 h, `truncated` correctly true for a 24 h request, 0 real gaps,
+      current reading 0 min old and matching the tail of the series. The run also caught a
+      false-gap bug at the graph→current join — fixed, with a regression test
+- [~] Milestones 1 & 2 built and verified against stubs — awaiting the real-account run:
+      upstream client (region redirect, `Account-Id`, token rotation, rate limiting),
+      session handling, windowing/gaps/time-in-range, MCP server with both tools.
+      42 tests green; MCP handshake driven end to end over stdio (2026-08-06)
+- [x] Scaffolded the project: strict TS, `node:test`, MIT licence, trunk-based branching.
+      Domain layer done — `Reading` (mg/dL canonical), `FactoryTimestamp` parser (10 tests
+      green), `buildSeries` handling the graph lag and the ordering trap (2026-08-06)
+- [x] Settled the remaining open decisions: minimal dependencies (2 prod, 2 dev — no date
+      lib, no test runner), MIT, trunk-based (2026-08-06)
+- [x] ADR 0003 — Nightscout as alternate source at Milestone 4, no collector to build
+      (2026-08-06)
+- [x] Reviewed prior art: both existing LibreLink MCP servers report the *requested* period
+      rather than the covered one, and compute GMI from ~12 h. Recorded in ADR 0002 § Notes
+      and `docs/LEARNINGS.md` (2026-08-06)
+- [x] History horizon settled: V1 targets ~12 h, long-term deferred to Milestone 4
+      (2026-08-06). `logbook` probed and rejected — 14 of 17 entries are alarms
+- [x] Verified the LibreLinkUp contract end to end against a real account — login, region
+      redirect (`fr`), `Account-Id`, connections, graph (2026-08-06). Recorded in
+      `docs/ARCHITECTURE.md`; traps in `docs/LEARNINGS.md`
+- [x] LibreLinkUp follower-account sharing already in place (2026-08-06)
+- [x] ADR 0002 — data source: LibreLinkUp cloud API (2026-08-06)
+- [x] ADR 0001 — stack: Node/TypeScript (2026-08-06)
 - [x] Project bootstrapped (2026-08-06)
 
 ---
