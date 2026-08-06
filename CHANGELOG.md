@@ -24,11 +24,19 @@ versions follow [Semantic Versioning](https://semver.org/).
 - Analysis layer: windowing, gap detection, time-in-range against the account's own band
 - MCP stdio server exposing `get_current_glucose` and `get_glucose_history`
 - `npm run smoke` — redacted end-to-end check against a real account
+- `mcp-freestyle-login` / `-install` / `-logout`: the password goes to the OS keychain and
+  the MCP client config carries only the e-mail
 - `.claude/rules/typescript.md` — coding conventions scoped to `src/` and `scripts/`
 
 ### Changed
 - V1 history horizon narrowed to ~12 h after upstream verification; long-term history moved
   to Milestone 4 (`docs/VISION.md`, `docs/ROADMAP.md`)
+- **The password no longer belongs in the MCP client config.** It lives in the OS keychain;
+  `LIBRELINKUP_PASSWORD` remains as a CI/one-off override
+
+### Security
+- Credentials are kept out of `claude_desktop_config.json`, which is world-readable, often
+  synced, and routinely pasted into bug reports
 
 ### Deprecated
 

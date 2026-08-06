@@ -9,10 +9,16 @@
     "node": ">=20"
   },
   "bin": {
-    "mcp-freestyle": "dist/index.js"
+    "mcp-freestyle": "dist/index.js",
+    "mcp-freestyle-login": "dist/cli/login.js",
+    "mcp-freestyle-logout": "dist/cli/logout.js",
+    "mcp-freestyle-install": "dist/cli/install.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "mcp",
@@ -27,11 +33,15 @@
     "dev": "tsc --watch",
     "test": "node --test 'src/**/*.test.ts'",
     "smoke": "node scripts/smoke.ts",
+    "login": "node src/cli/login.ts",
+    "logout": "node src/cli/logout.ts",
+    "install:claude": "node src/cli/install.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.scripts.json",
     "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "@napi-rs/keyring": "^1.3.0",
     "zod": "^3.25.0"
   },
   "devDependencies": {

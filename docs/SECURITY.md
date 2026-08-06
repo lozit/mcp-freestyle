@@ -56,8 +56,13 @@ For the **why** behind structural decisions → see `docs/decisions/`.
 
 ## Secrets and configuration
 
-- Where secrets live: environment variables or a local config file that is **git-ignored**.
-  Never a tracked file, never a default in code.
+- Where secrets live: **the OS keychain**, keyed by e-mail (`mcp-freestyle` service), written
+  by `mcp-freestyle-login` and read by the server at startup. `LIBRELINKUP_PASSWORD` still
+  overrides it for CI and one-off runs, but it is the fallback, not the expected path.
+- **The MCP client config holds only the e-mail** — an identifier, not a secret. This is the
+  whole point of the keychain step: `claude_desktop_config.json` is world-readable, often
+  synced, and routinely pasted into bug reports. It must never contain a credential.
+- Never a tracked file, never a default in code.
 - NEVER commit a secret. See `.gitignore` (`.env`).
 - **Never log** credentials, tokens, or the sensor serial — not even at debug level.
 

@@ -21,9 +21,12 @@ This file differs from the long-term roadmap: it describes what is happening **n
       the `mcp-freestyle` name is free on npm)
 - [ ] Security contact for disclosure (`docs/SECURITY.md`)
 - [ ] Remote git — "open source" stays theoretical until the repo is somewhere
-- [ ] Pick the date/time library and the `Reading` domain type (unit + zone encoded in the type)
-- [ ] Define the MCP tool surface: current reading + historical window
-- [ ] Fill `Setup / Build / Test` in `CLAUDE.md` once the project runs
+- [ ] Finish `README.md`: usage examples and contributing (two `To be completed` left)
+- [ ] Run `mcp-freestyle-install` for real against Claude Desktop — the `code` target and
+      the merge logic are covered, the actual config write has only been exercised on
+      temp files
+- [ ] Report the requested-period defect upstream to the two existing LibreLink MCP servers
+      (evidence and code excerpts are in ADR 0002 § Notes)
 
 ## Ideas — to triage
 

@@ -1,7 +1,8 @@
 /**
  * End-to-end smoke test against a real LibreLinkUp account.
  *
- *   LIBRELINKUP_EMAIL=… LIBRELINKUP_PASSWORD=… npm run smoke
+ *   npm run login                        # once — password goes to the OS keychain
+ *   LIBRELINKUP_EMAIL=… npm run smoke
  *
  * This is the one check the test suite cannot do: everything else is verified
  * against stubs. It exercises login → region redirect → Account-Id →

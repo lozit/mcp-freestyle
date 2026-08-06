@@ -24,7 +24,8 @@ export step, and without health data leaving the user's machine.
 - **Goal**: one MCP tool returning the live glucose value
 - **Scope**: auth, fetch, unit + timezone normalization, one tool, stdio transport
 - **Exit criteria**: Claude answers "what's my glucose right now?" with real sensor data
-- **Status**: Upcoming
+- **Status**: **Shipped** (2026-08-06) — validated end to end against a real account:
+  48 readings over 11.9 h, current reading 0 min old
 
 ### Milestone 2 — History and aggregates (~12 h horizon)
 
@@ -35,7 +36,10 @@ export step, and without health data leaving the user's machine.
 - **Exit criteria**: Claude answers "how has my time-in-range been today?" correctly, with
   gaps acknowledged rather than smoothed over, and states the range actually covered when the
   request exceeds the upstream cap
-- **Status**: Upcoming
+- **Status**: **Built and verified** (2026-08-06) — windowing, gap detection and
+  time-in-range ship with the tools; the smoke run showed `truncated: true` for a 24 h
+  request and 0 false gaps. Not yet exercised through an MCP client on a day with a real
+  collection gap
 
 ### Milestone 3 — Installable by a third party
 

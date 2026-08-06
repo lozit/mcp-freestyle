@@ -12,51 +12,77 @@ there. You need **all** of the following:
   FreeStyle reader instead, nothing is uploaded continuously and this server cannot help you.
 - **LibreLinkUp sharing set up** from that LibreLink app to a follower account. The server
   signs in as the follower.
-- **Node.js** installed.
+- **Node.js ≥ 20**, and a working OS keychain (macOS Keychain, Windows Credential Manager,
+  or libsecret on Linux).
 
 > The server talks to the **unofficial** LibreLinkUp / LibreView API, which is not affiliated
 > with or supported by Abbott. It can stop working without notice. See
 > [`docs/decisions/0002-data-source-librelinkup.md`](docs/decisions/0002-data-source-librelinkup.md).
 
-## Installation
+## Quickstart
 
-Not published yet. To run from a clone:
+### 1. Install
+
+Not published yet — from a clone:
 
 ```bash
-npm install
-npm run build
+git clone <this repo> && cd mcp-freestyle
+npm install && npm run build
 ```
 
-Once published it will run via `npx mcp-freestyle` with no prior install.
+Once published: `npm install -g mcp-freestyle`.
+
+### 2. Log in once
+
+```bash
+npm run login          # from a clone
+mcp-freestyle-login    # if installed globally
+```
+
+You're prompted for your **LibreLinkUp follower** e-mail and password. The password is
+verified by actually authenticating — if it's wrong, or sharing isn't set up, you find out
+now rather than at the first question you ask Claude. It is then stored in your **OS
+keychain**, never in a config file.
+
+The token upstream issues is *not* stored. It lives ~180 days with no revocation path, so
+keeping it around would be the bigger risk; the server re-authenticates instead.
+
+At the end, `login` offers to wire the server into Claude Desktop in one step.
+
+### 3. Hook it up to Claude
+
+**Claude Desktop** — one command:
+
+```bash
+mcp-freestyle-install
+```
+
+It merges an entry into `~/Library/Application Support/Claude/claude_desktop_config.json`
+(`%APPDATA%\Claude\…` on Windows) using absolute paths, backing up any existing config
+first and leaving your other servers untouched. It refuses to overwrite a config it can't
+parse. Quit Claude Desktop fully (⌘Q) and relaunch.
+
+**Claude Code**:
+
+```bash
+mcp-freestyle-install code   # prints the exact `claude mcp add` command
+```
+
+**The written entry contains only your e-mail** — an identifier, not a secret. That is the
+point of the keychain step: a config file that gets synced, backed up, or pasted into a bug
+report never holds a credential.
+
+To remove the stored password: `mcp-freestyle-logout`.
 
 ## Configuration
-
-All configuration is environment variables. Never put credentials in a tracked file.
 
 | Variable | Required | Default | Notes |
 |---|---|---|---|
 | `LIBRELINKUP_EMAIL` | yes | — | Your **LibreLinkUp follower** account, not the primary LibreLink one |
-| `LIBRELINKUP_PASSWORD` | yes | — | |
+| `LIBRELINKUP_PASSWORD` | no | keychain | Overrides the keychain. For CI or a one-off run — not the expected path |
 | `LIBRELINKUP_VERSION` | no | `4.16.0` | Pinned client version. Upstream rejects stale values — if requests start failing, set this to the current LibreLinkUp app version |
 | `LIBRELINKUP_PRODUCT` | no | `llu.android` | |
 | `LIBRELINKUP_BASE_URL` | no | `https://api.libreview.io` | Entry point only; the regional host is discovered at login |
-
-Add it to your MCP client (Claude Desktop, Claude Code) as an stdio server:
-
-```json
-{
-  "mcpServers": {
-    "freestyle": {
-      "command": "node",
-      "args": ["/path/to/mcp-freestyle/dist/index.js"],
-      "env": {
-        "LIBRELINKUP_EMAIL": "you@example.com",
-        "LIBRELINKUP_PASSWORD": "…"
-      }
-    }
-  }
-}
-```
 
 ## Tools
 

@@ -44,7 +44,8 @@ A Model Context Protocol server that reads data from a FreeStyle glucose sensor.
 - Typecheck: `npm run typecheck`
 - Build: `npm run build` (emits `dist/`)
 - Run dev: `npm run dev` (tsc in watch mode)
-- **Smoke test against the real account**: `LIBRELINKUP_EMAIL=… LIBRELINKUP_PASSWORD=… npm run smoke` — the one check the suite can't do
+- **Credentials**: `npm run login` once (password → OS keychain), then `npm run install:claude`
+- **Smoke test against the real account**: `LIBRELINKUP_EMAIL=… npm run smoke` — the one check the suite can't do
 - Lint: none — the strict `tsconfig.json` is the only gate. Add one when it earns its keep.
 
 > Coding conventions live in **`.claude/rules/typescript.md`** (auto-loaded when you touch
@@ -57,6 +58,8 @@ A Model Context Protocol server that reads data from a FreeStyle glucose sensor.
 - `CLAUDE.md` — this file
 - `PLAN.md` — active todo (if present), maintained during work
 - `src/index.ts` — MCP server + tool surface. **stdout is the protocol** — every diagnostic goes to stderr
+- `src/cli/` — `login` (password → OS keychain), `install` (writes the MCP client config), `logout`
+- `src/credentials.ts` — the keychain. Password only; the token is never persisted
 - `src/session.ts` — holds the upstream session across tool calls, carries the rotated token
 - `src/domain/` — units, timestamps, the `Reading` type. No upstream shapes leak in here
 - `src/upstream/` — the LibreLinkUp client and its errors, **isolated on purpose** (ADR 0002)
