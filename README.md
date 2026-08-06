@@ -1,6 +1,9 @@
 <!-- generated-by: groundrules v1.10.0 -->
 # mcp-freestyle
 
+[![npm](https://img.shields.io/npm/v/mcp-freestyle)](https://www.npmjs.com/package/mcp-freestyle)
+[![license](https://img.shields.io/npm/l/mcp-freestyle)](LICENSE)
+
 A Model Context Protocol server that reads data from a FreeStyle glucose sensor.
 
 ## Requirements
@@ -23,14 +26,16 @@ there. You need **all** of the following:
 
 ### 1. Install
 
-Not published yet — from a clone:
+```bash
+npm install -g mcp-freestyle
+```
+
+Or from a clone, if you'd rather read the code first:
 
 ```bash
 git clone https://github.com/lozit/mcp-freestyle.git && cd mcp-freestyle
 npm install && npm run build
 ```
-
-Once published: `npm install -g mcp-freestyle`.
 
 ### 2. Log in once
 

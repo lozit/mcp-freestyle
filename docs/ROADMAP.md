@@ -46,9 +46,10 @@ export step, and without health data leaving the user's machine.
 - **Scope**: packaging, credential setup, `README.md` install path, no secrets in repo
 - **Exit criteria**: a third party installs and runs it in under 10 minutes from the
   `README.md` alone
-- **Status**: In progress — the `login` → `install` path is proven on the maintainer's
-  machine (2026-08-06), with the password in the OS keychain and no credential in the client
-  config. Not yet validated by anyone else, and packaging is still undecided
+- **Status**: **Shipped** (2026-08-06) — published to npm as `mcp-freestyle@0.1.0`, and a
+  clean `npx mcp-freestyle` install from the registry starts and serves both tools. Password
+  in the OS keychain, no credential in the client config. The exit criterion is only half
+  proven: the path works, but no third party has walked it yet
 
 ### Milestone 4 — Long-term history via Nightscout
 

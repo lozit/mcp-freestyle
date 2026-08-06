@@ -8,6 +8,15 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-08-06
+
+First published release. Reads a FreeStyle sensor from an MCP client; validated end to end
+against a real account and through Claude Desktop.
+
+Two known gaps, both stated in the README: `TrendArrow` is passed through untranslated
+because its mapping is unverified, and history caps at ~12 h because upstream ignores any
+longer request.
+
 ### Added
 - Project bootstrapped with groundrules on 2026-08-06
 - ADR 0001 — stack: Node.js + TypeScript with `@modelcontextprotocol/sdk`
@@ -34,21 +43,13 @@ versions follow [Semantic Versioning](https://semver.org/).
 - **The password no longer belongs in the MCP client config.** It lives in the OS keychain;
   `LIBRELINKUP_PASSWORD` remains as a CI/one-off override
 
+### Fixed
+- The install wrote a server path resolved against the wrong root, producing a config that
+  Claude Desktop could only report as "Server disconnected"
+
 ### Security
 - Credentials are kept out of `claude_desktop_config.json`, which is world-readable, often
   synced, and routinely pasted into bug reports
 
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-<!--
-## [0.1.0] - YYYY-MM-DD
-
-### Added
-- ...
--->
+[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/lozit/mcp-freestyle/releases/tag/v0.1.0

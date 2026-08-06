@@ -17,10 +17,8 @@ This file differs from the long-term roadmap: it describes what is happening **n
 - [ ] **Map `TrendArrow`** — carried verbatim as `rawTrendArrow` and deliberately
       untranslated. Needs verification against a real account; do not guess the enum
 - [ ] Retry on a rate-limited (429/430) response instead of surfacing it raw
-- [ ] Decide packaging: `npm publish` vs git install (ADR 0001 left it open;
-      the `mcp-freestyle` name is free on npm)
-- [ ] Security contact for disclosure (`docs/SECURITY.md`)
-- [ ] Remote git — "open source" stays theoretical until the repo is somewhere
+- [ ] Tag `v0.1.0` and cut a GitHub release — the CHANGELOG links to a tag that does not
+      exist yet
 - [ ] Finish `README.md`: usage examples and contributing (two `To be completed` left)
 - [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
       can only simulate. Everything else is now proven through a client
@@ -39,6 +37,9 @@ Raw ideas, captured before they're lost (e.g. via `/groundrules:idea`). Not yet 
 
 ## Recently done
 
+- [x] **Published** (2026-08-06) — `mcp-freestyle@0.1.0` on npm and the repo public at
+      github.com/lozit/mcp-freestyle. A clean `npx` install from the registry starts and
+      serves both tools, which is the first time the third-party path has been walked at all
 - [x] **Working in Claude Desktop** (2026-08-06) — Claude reads the glucose through the
       client, which closes the V1 goal in `docs/VISION.md`. `mcp-freestyle-install` writes a
       working config and the password comes from the OS keychain. Getting there exposed two
