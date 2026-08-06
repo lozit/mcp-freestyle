@@ -1,0 +1,72 @@
+{
+  "groundrulesVersion": "1.10.0",
+  "bootstrappedAt": "2026-08-06",
+  "bootstrappedWithVersion": "1.10.0",
+  "migrations": [],
+  "answers": {
+    "projectName": "mcp-freestyle",
+    "description": "A Model Context Protocol server that reads data from a FreeStyle glucose sensor.",
+    "projectType": "code",
+    "stack": "undecided",
+    "hasPlan": true,
+    "hasArchitecture": true,
+    "hasGlossary": true,
+    "hasChangelog": true,
+    "specializedDocs": ["SECURITY", "DATA_MODEL", "ROADMAP", "AGENT_EVALS"],
+    "remoteProvider": "",
+    "remoteVisibility": ""
+  },
+  "intent": {
+    "source": "interview",
+    "filePath": null,
+    "goal": "Expose a FreeStyle continuous glucose monitor to an AI agent over MCP, covering both real-time reads (current value and trend) and historical analysis (windows and aggregates), with no manual export step.",
+    "users": "Open source, aimed at other people living with diabetes who use a FreeStyle sensor and an MCP-capable agent. Each installation is self-hosted and bound to a single sensor account.",
+    "constraints": [
+      "Health data — readings and credentials stay local; nothing leaves in clear, nothing is committed.",
+      "Not a medical device — informational only; no treatment decision may depend on it."
+    ],
+    "nonGoals": [
+      "No writing and no dose calculation — read-only.",
+      "No UI or dashboard — the MCP server is the only interface.",
+      "No real-time hypo/hyper alerts.",
+      "No multi-user support — one sensor account per installation."
+    ],
+    "acceptanceCriteria": [
+      "MCP tools work end to end: a current-glucose tool and a history-over-N tool both return real sensor data from Claude.",
+      "A third party installs it in under 10 minutes following the README alone.",
+      "No secret and no real reading anywhere in the repo; credentials via env vars / local config; .gitignore verified.",
+      "Units (mg/dL and mmol/L) and timezones handled explicitly and correctly."
+    ]
+  },
+  "appliedPractices": [],
+  "loop": { "scaffolded": false, "at": null },
+  "policies": { "noAiAttribution": false },
+  "generatedFiles": [
+    "README.md",
+    "CLAUDE.md",
+    ".gitignore",
+    "PLAN.md",
+    "CHANGELOG.md",
+    "docs/VISION.md",
+    "docs/ARCHITECTURE.md",
+    "docs/GLOSSARY.md",
+    "docs/DATA_MODEL.md",
+    "docs/SECURITY.md",
+    "docs/ROADMAP.md",
+    "docs/AGENT-EVALS.md",
+    "docs/LEARNINGS.md",
+    "docs/decisions/README.md",
+    "docs/decisions/0000-template.md",
+    "docs/media/README.md",
+    "intake/README.md",
+    ".groundrules.json"
+  ],
+  "skippedFiles": {
+    "intake/INTENT.md": "intent captured by interview — no source brief to archive",
+    "loop/": "loop scaffolding declined at bootstrap",
+    "docs/DESIGN_SYSTEM.md": "not selected — no UI",
+    "docs/I18N.md": "not selected",
+    "docs/PROCESS.md": "not selected",
+    "RELEASE.md": "not selected — no deployment target yet"
+  }
+}
