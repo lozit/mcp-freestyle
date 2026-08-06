@@ -1,8 +1,10 @@
 <!-- generated-by: groundrules v1.10.0 -->
 # mcp-freestyle
 
-[![npm](https://img.shields.io/npm/v/mcp-freestyle)](https://www.npmjs.com/package/mcp-freestyle)
-[![license](https://img.shields.io/npm/l/mcp-freestyle)](LICENSE)
+[![npm](https://img.shields.io/npm/v/mcp-freestyle.svg)](https://www.npmjs.com/package/mcp-freestyle)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Node: ≥20](https://img.shields.io/badge/node-%E2%89%A520-brightgreen.svg)](#requirements)
+[![Not a medical device](https://img.shields.io/badge/not%20a-medical%20device-important.svg)](#disclaimer)
 
 A Model Context Protocol server that reads data from a FreeStyle glucose sensor.
 
