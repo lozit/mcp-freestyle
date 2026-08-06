@@ -50,6 +50,10 @@ function asError(message: string) {
 /** Turn a thrown error into something the agent can act on, without leaking
  *  credentials or readings into the message. */
 function explain(error: unknown): string {
+  if (error instanceof ConfigError) {
+    // Already written for a human to act on — see src/config.ts.
+    return error.message;
+  }
   if (error instanceof UpstreamContractError) {
     return (
       `Upstream returned something unexpected and the request was refused rather than ` +
@@ -62,18 +66,24 @@ function explain(error: unknown): string {
   return "Request failed for an unknown reason.";
 }
 
-async function main(): Promise<void> {
-  let client: Client;
-  try {
-    client = new Client(configFromEnv());
-  } catch (error) {
-    if (error instanceof ConfigError) {
-      process.stderr.write(`${error.message}\n`);
-      process.exit(1);
-    }
-    throw error;
-  }
+/**
+ * Resolve configuration on first use, not at startup.
+ *
+ * Exiting at startup on a missing credential would surface in the MCP client as
+ * "Server disconnected" and nothing else — the actionable message would go to a
+ * stderr nobody reads. Starting anyway means the user asks a question and gets
+ * "run mcp-freestyle-login" as the answer, which is where they are looking.
+ */
+function lazyClient(): () => Client {
+  let client: Client | null = null;
+  return () => {
+    client ??= new Client(configFromEnv());
+    return client;
+  };
+}
 
+async function main(): Promise<void> {
+  const client = lazyClient();
   const server = new McpServer({ name: "mcp-freestyle", version: "0.1.0" });
 
   server.registerTool(
@@ -91,7 +101,7 @@ async function main(): Promise<void> {
     },
     async ({ unit }) => {
       try {
-        const { reading, targetRange } = await client.current();
+        const { reading, targetRange } = await client().current();
         return asJson({
           ...renderReading(reading, unit),
           target_range: {
@@ -135,7 +145,7 @@ async function main(): Promise<void> {
     },
     async ({ hours, unit }) => {
       try {
-        const { series, targetRange } = await client.history();
+        const { series, targetRange } = await client().history();
         const windowed = withinLastHours(series, hours, new Date());
         const summary = summarize(windowed, hours, targetRange);
 

@@ -37,8 +37,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "node --test 'src/**/*.test.ts'",
+    "test": "node --test \"src/**/*.test.ts\"",
     "smoke": "node scripts/smoke.ts",
+    "check:starts": "npm run build && node scripts/check-starts.mjs",
     "login": "node src/cli/login.ts",
     "logout": "node src/cli/logout.ts",
     "install:claude": "node src/cli/install.ts",

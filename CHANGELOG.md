@@ -8,6 +8,17 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- CI on push and pull request: typecheck and tests across Linux, macOS and Windows, plus a
+  job that boots the built server on every Node version `engines` claims to support
+- `npm run check:starts` — asserts the built server starts and serves both tools
+
+### Fixed
+- **The server no longer exits at startup when credentials are missing.** It started before
+  the transport connected, so an MCP client could only report "Server disconnected". Config
+  now resolves on first tool use and the failure arrives as a tool error the user can read
+- `npm test` used single quotes around its glob, which are not shell syntax on Windows
+
 ## [0.1.0] - 2026-08-06
 
 First published release. Reads a FreeStyle sensor from an MCP client; validated end to end

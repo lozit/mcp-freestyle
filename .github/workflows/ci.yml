@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # The test suite runs the TypeScript sources directly through Node's native
+  # type stripping — no build step, no test-runner dependency (ADR 0001). That
+  # needs a Node where stripping is on by default, which is why this job pins 24
+  # rather than matrixing Node versions here; the `engines` job below covers the
+  # versions the *published* package claims to support.
+  #
+  # The OS matrix earns its keep: @napi-rs/keyring is a native module, and the
+  # install CLI writes platform-specific config paths.
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: npm
+
+      # The keyring backend on Linux. No test reads the keychain, but the module
+      # is loaded, and a missing libsecret fails at load rather than at use.
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libsecret-1-dev
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  # `engines` claims node >= 20. The sources need newer than that, but the
+  # published package is plain JavaScript — so verify the claim against the
+  # built artifact instead of trusting it.
+  engines:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["20.x", "22.x", "24.x"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: sudo apt-get update && sudo apt-get install -y libsecret-1-dev
+      - run: npm ci
+      - run: npm run build
+      - name: The built server answers an MCP initialize
+        run: node scripts/check-starts.mjs
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high

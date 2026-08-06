@@ -1,6 +1,7 @@
 <!-- generated-by: groundrules v1.10.0 -->
 # mcp-freestyle
 
+[![CI](https://github.com/lozit/mcp-freestyle/actions/workflows/ci.yml/badge.svg)](https://github.com/lozit/mcp-freestyle/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/mcp-freestyle.svg)](https://www.npmjs.com/package/mcp-freestyle)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Node: ≥20](https://img.shields.io/badge/node-%E2%89%A520-brightgreen.svg)](#requirements)

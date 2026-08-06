@@ -52,6 +52,20 @@ from it. They *document* the 12 h limit, but in the tool description the model r
 time, not in the response that asserts the period. **Disclosure in the schema does not
 substitute for honesty in the payload.**
 
+## 2026-08-06 — An MCP server must start even when it is misconfigured
+
+**Why**: config was resolved at startup, so a missing keychain entry made the process exit
+before connecting. The MCP client shows exactly one thing for that — **"Server
+disconnected"** — and the actionable message ("run `mcp-freestyle-login`") went to a stderr
+nobody reads. This is the second time that same opaque string cost real debugging time; the
+first was a bad server path in the client config.
+
+**When to apply**: resolve credentials and configuration **lazily**, on first tool use, and
+surface the failure as a tool error. The user asks a question and reads the answer — that is
+where the instruction has to appear. Anything that can make the process exit before the
+transport connects is invisible by construction. `npm run check:starts` guards this: it boots
+the built server with no credentials and asserts it still serves both tools.
+
 ## 2026-08-06 — npm serves the README from the tarball, so finish it before publishing
 
 **Why**: the README was polished right after `npm publish` rather than before. npm renders
