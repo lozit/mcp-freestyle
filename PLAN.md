@@ -22,9 +22,8 @@ This file differs from the long-term roadmap: it describes what is happening **n
 - [ ] Security contact for disclosure (`docs/SECURITY.md`)
 - [ ] Remote git — "open source" stays theoretical until the repo is somewhere
 - [ ] Finish `README.md`: usage examples and contributing (two `To be completed` left)
-- [ ] Run `mcp-freestyle-install` for real against Claude Desktop — the `code` target and
-      the merge logic are covered, the actual config write has only been exercised on
-      temp files
+- [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
+      can only simulate. Everything else is now proven through a client
 - [ ] Report the requested-period defect upstream to the two existing LibreLink MCP servers
       (evidence and code excerpts are in ADR 0002 § Notes)
 
@@ -40,6 +39,11 @@ Raw ideas, captured before they're lost (e.g. via `/groundrules:idea`). Not yet 
 
 ## Recently done
 
+- [x] **Working in Claude Desktop** (2026-08-06) — Claude reads the glucose through the
+      client, which closes the V1 goal in `docs/VISION.md`. `mcp-freestyle-install` writes a
+      working config and the password comes from the OS keychain. Getting there exposed two
+      bugs of mine: a server path resolved against the wrong root, and a precondition one
+      caller routed around (`docs/AGENT-EVALS.md`)
 - [x] **Milestone 1 validated end to end against the real account** (2026-08-06):
       48 readings over 11.9 h, `truncated` correctly true for a 24 h request, 0 real gaps,
       current reading 0 min old and matching the tail of the series. The run also caught a

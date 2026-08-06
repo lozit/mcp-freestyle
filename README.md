@@ -26,7 +26,7 @@ there. You need **all** of the following:
 Not published yet — from a clone:
 
 ```bash
-git clone <this repo> && cd mcp-freestyle
+git clone https://github.com/lozit/mcp-freestyle.git && cd mcp-freestyle
 npm install && npm run build
 ```
 
@@ -104,7 +104,21 @@ npm run build     # emits dist/
 
 ## Usage
 
-To be completed.
+Once connected, ask in plain language:
+
+> *What's my glucose right now?*
+>
+> *How has my time in range been today?*
+>
+> *Show me the last 6 hours.*
+
+The answers carry the instant each reading was actually taken, the range the data actually
+covered, and any collection gaps — so a reply about "today" says how much of today it could
+see. If you ask for more than upstream holds, it tells you what it got instead of quietly
+answering over less.
+
+**Not a substitute for your reader or your app.** This is informational only — see the
+disclaimer above.
 
 ## Project structure
 
@@ -133,10 +147,37 @@ official reader/app and your care team.
 
 ## Contributing
 
-To be completed.
+Issues and pull requests are welcome — especially from anyone who can help map the
+`TrendArrow` values (see below), or who hits a LibreLinkUp region or payload shape this
+hasn't seen.
 
-**One rule that is not negotiable**: never commit a real glucose reading, sensor
-serial, account identifier, or credential. Tests use synthetic fixtures only.
+```bash
+npm test          # Node's built-in runner, no network — `fetch` is injectable
+npm run typecheck # strict TypeScript, the project's only lint gate
+```
+
+**One rule that is not negotiable**: never commit a real glucose reading, sensor serial,
+account identifier, or credential — not in a fixture, not in an issue, not in a screenshot.
+Tests use synthetic fixtures only. A value paired with a timestamp is a health measurement
+even with no name attached.
+
+Design decisions live in [`docs/decisions/`](docs/decisions/) and the verified upstream
+contract in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). Read those before changing how
+readings are fetched or aggregated — several non-obvious upstream behaviours are documented
+there because they cost real debugging to find.
+
+## Known gaps
+
+- **`TrendArrow` is not translated.** Upstream sends an integer; its mapping is undocumented
+  and has only been observed at one value. It is passed through as `raw_trend_arrow` rather
+  than guessed at — a confidently wrong arrow is worse than none.
+- **~12 hours of history, maximum.** Upstream ignores any longer request. See
+  [ADR 0003](docs/decisions/0003-nightscout-as-alternate-source.md) for the long-term plan.
+
+## Security
+
+Report vulnerabilities privately to `guillaume.ferrari@protonmail.com` — see
+[`docs/SECURITY.md`](docs/SECURITY.md).
 
 ## License
 

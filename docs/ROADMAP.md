@@ -36,10 +36,9 @@ export step, and without health data leaving the user's machine.
 - **Exit criteria**: Claude answers "how has my time-in-range been today?" correctly, with
   gaps acknowledged rather than smoothed over, and states the range actually covered when the
   request exceeds the upstream cap
-- **Status**: **Built and verified** (2026-08-06) — windowing, gap detection and
-  time-in-range ship with the tools; the smoke run showed `truncated: true` for a 24 h
-  request and 0 false gaps. Not yet exercised through an MCP client on a day with a real
-  collection gap
+- **Status**: **Shipped** (2026-08-06) — windowing, gap detection and time-in-range ship
+  with the tools, exercised through Claude Desktop. Not yet seen on a day with a real
+  collection gap, which is the one path the tests can only simulate
 
 ### Milestone 3 — Installable by a third party
 
@@ -47,7 +46,9 @@ export step, and without health data leaving the user's machine.
 - **Scope**: packaging, credential setup, `README.md` install path, no secrets in repo
 - **Exit criteria**: a third party installs and runs it in under 10 minutes from the
   `README.md` alone
-- **Status**: Upcoming
+- **Status**: In progress — the `login` → `install` path is proven on the maintainer's
+  machine (2026-08-06), with the password in the OS keychain and no credential in the client
+  config. Not yet validated by anyone else, and packaging is still undecided
 
 ### Milestone 4 — Long-term history via Nightscout
 

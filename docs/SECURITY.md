@@ -92,5 +92,7 @@ therapy recommendations. This is a safety property, not a disclaimer to be softe
 
 ## Incident / disclosure
 
-Procedure in case of a breach or leak: `<fill in>` — at minimum, a security contact in the
-`README.md` and a rule that a leaked credential is rotated before anything else.
+Report a vulnerability privately to **guillaume.ferrari@protonmail.com** — not in a public
+issue. If the report concerns a leaked credential, rotate it before anything else: the
+LibreLinkUp token cannot be revoked, so changing the Abbott account password is the only
+lever that exists.
