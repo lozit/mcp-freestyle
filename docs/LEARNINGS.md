@@ -52,6 +52,18 @@ from it. They *document* the 12 h limit, but in the tool description the model r
 time, not in the response that asserts the period. **Disclosure in the schema does not
 substitute for honesty in the payload.**
 
+## 2026-08-06 — npm serves the README from the tarball, so finish it before publishing
+
+**Why**: the README was polished right after `npm publish` rather than before. npm renders
+the copy baked into the published tarball and only refreshes it on a new version, so the
+package page for 0.1.0 greets every visitor with "Not published yet — from a clone". The
+fix costs a whole patch release for a docs-only change.
+
+**When to apply**: before any `npm publish`. README, CHANGELOG and LICENSE ship *inside* the
+tarball — treat them as release artefacts subject to the same "is this true right now?" check
+as the code, not as things to tidy afterwards. The git repository can be corrected in place;
+a published tarball cannot.
+
 ## 2026-08-06 — Aggregate over automatic samples only, never the whole series
 
 **Why**: the first real-account run showed a 1500-second interval in a series whose cadence
