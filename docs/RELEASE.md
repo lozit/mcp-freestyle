@@ -25,10 +25,17 @@ the pipeline depends on it.
 #    README, CHANGELOG and LICENSE ship inside the tarball — npm only refreshes
 #    them on a new version, so they must be true *before* the tag.
 
-# 2. Bump, tag and push. `npm version` writes package.json and creates the tag.
+# 2. The version lives in three places. `npm version` only writes one of them.
+#    Edit server.json (`version` and `packages[0].version`) to match, then:
+npm run check:versions
+
+# 3. Bump, tag and push. `npm version` writes package.json and creates the tag.
 npm version patch          # or minor / major
 git push --follow-tags
 ```
+
+> `check:versions` also runs in CI on every push, so drift between `package.json` and
+> `server.json` is caught long before a release rather than at the tag.
 
 The tag push triggers `publish.yml`, which:
 
@@ -37,7 +44,14 @@ The tag push triggers `publish.yml`, which:
 2. runs typecheck, the test suite and the build;
 3. refuses to publish a README that still advertises the package as unpublished;
 4. boots the built server and asserts it serves both tools;
-5. publishes with provenance.
+5. publishes to npm with provenance;
+6. lists the release on the [MCP Registry](https://registry.modelcontextprotocol.io) under
+   `io.github.lozit/mcp-freestyle`, which is what makes it discoverable from MCP clients.
+
+The registry step needs no secret: ownership of the `io.github.lozit/*` namespace is proven
+by the workflow's OIDC token, so only a workflow in `github.com/lozit/*` can claim it. It
+runs **after** npm on purpose — the registry entry points at an npm version, and publishing
+it first would advertise a package that does not exist yet.
 
 Then cut the GitHub release:
 

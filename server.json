@@ -1,0 +1,58 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.lozit/mcp-freestyle",
+  "description": "Read-only FreeStyle glucose sensor access via LibreLinkUp. Not a medical device.",
+  "version": "0.1.1",
+  "repository": {
+    "url": "https://github.com/lozit/mcp-freestyle",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/lozit/mcp-freestyle#readme",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "mcp-freestyle",
+      "version": "0.1.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeHint": "npx",
+      "environmentVariables": [
+        {
+          "name": "LIBRELINKUP_EMAIL",
+          "description": "LibreLinkUp *follower* account e-mail — not the primary LibreLink account. The password is stored once via `npx mcp-freestyle-login` in the OS keychain, so it never appears in this configuration.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "LIBRELINKUP_PASSWORD",
+          "description": "Overrides the OS keychain. Intended for CI and one-off runs; prefer `mcp-freestyle-login` so no credential lands in a config file.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "LIBRELINKUP_VERSION",
+          "description": "Pinned LibreLinkUp client version sent as the `version` header. Upstream rejects stale values — set this to the current LibreLinkUp app version if requests start failing.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "4.16.0"
+        },
+        {
+          "name": "LIBRELINKUP_PRODUCT",
+          "description": "Client product identifier sent as the `product` header.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "llu.android"
+        },
+        {
+          "name": "LIBRELINKUP_BASE_URL",
+          "description": "Entry point for authentication. The regional host is discovered at login and is never configured here.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "https://api.libreview.io"
+        }
+      ]
+    }
+  ]
+}
