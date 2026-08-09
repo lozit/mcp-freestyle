@@ -8,6 +8,11 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-09
+
+Lists the server on the MCP Registry, so it can be found from MCP clients rather than only
+from npm.
+
 ### Added
 - `server.json` and a release step that lists the server on the
   [MCP Registry](https://registry.modelcontextprotocol.io), making it discoverable from MCP
@@ -80,6 +85,7 @@ longer request.
 - Credentials are kept out of `claude_desktop_config.json`, which is world-readable, often
   synced, and routinely pasted into bug reports
 
-[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/lozit/mcp-freestyle/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/lozit/mcp-freestyle/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/lozit/mcp-freestyle/releases/tag/v0.1.0
