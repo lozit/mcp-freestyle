@@ -17,11 +17,11 @@ This file differs from the long-term roadmap: it describes what is happening **n
 - [ ] **Map `TrendArrow`** — carried verbatim as `rawTrendArrow` and deliberately
       untranslated. Needs verification against a real account; do not guess the enum
 - [ ] Retry on a rate-limited (429/430) response instead of surfacing it raw
-- [ ] **Publish 0.1.1 — docs only.** The npm page for 0.1.0 shows the pre-release README
+- [ ] **Publish 0.1.1 — docs only.** Configure the npm trusted publisher first (docs/RELEASE.md),
+      then `npm version patch && git push --follow-tags`. The npm page for 0.1.0 shows the pre-release README
       ("Not published yet — from a clone"), because the README was corrected after
       publishing and npm only refreshes it on a new version. Nothing else changes.
       Ordering lesson: finish the README *before* `npm publish`, not after
-- [ ] Finish `README.md`: usage examples and contributing (two `To be completed` left)
 - [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
       can only simulate. Everything else is now proven through a client
 - [ ] Report the requested-period defect upstream to the two existing LibreLink MCP servers
@@ -51,10 +51,6 @@ Raw ideas, captured before they're lost (e.g. via `/groundrules:idea`). Not yet 
       48 readings over 11.9 h, `truncated` correctly true for a 24 h request, 0 real gaps,
       current reading 0 min old and matching the tail of the series. The run also caught a
       false-gap bug at the graph→current join — fixed, with a regression test
-- [~] Milestones 1 & 2 built and verified against stubs — awaiting the real-account run:
-      upstream client (region redirect, `Account-Id`, token rotation, rate limiting),
-      session handling, windowing/gaps/time-in-range, MCP server with both tools.
-      42 tests green; MCP handshake driven end to end over stdio (2026-08-06)
 - [x] Scaffolded the project: strict TS, `node:test`, MIT licence, trunk-based branching.
       Domain layer done — `Reading` (mg/dL canonical), `FactoryTimestamp` parser (10 tests
       green), `buildSeries` handling the graph lag and the ordering trap (2026-08-06)

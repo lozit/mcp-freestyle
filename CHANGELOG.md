@@ -12,6 +12,9 @@ versions follow [Semantic Versioning](https://semver.org/).
 - CI on push and pull request: typecheck and tests across Linux, macOS and Windows, plus a
   job that boots the built server on every Node version `engines` claims to support
 - `npm run check:starts` — asserts the built server starts and serves both tools
+- Tag-triggered npm publishing via Trusted Publishing (no token, no interactive 2FA), with
+  guards on tag/version agreement and on a README that still says "not published"
+- `docs/RELEASE.md` — the release procedure and its one manual prerequisite
 
 ### Fixed
 - **The server no longer exits at startup when credentials are missing.** It started before
