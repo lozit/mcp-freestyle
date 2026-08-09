@@ -17,15 +17,10 @@ This file differs from the long-term roadmap: it describes what is happening **n
 - [ ] **Map `TrendArrow`** — carried verbatim as `rawTrendArrow` and deliberately
       untranslated. Needs verification against a real account; do not guess the enum
 - [ ] Retry on a rate-limited (429/430) response instead of surfacing it raw
-- [ ] **Publish 0.1.1 — docs only.** Configure the npm trusted publisher first (docs/RELEASE.md),
-      then `npm version patch && git push --follow-tags`. The npm page for 0.1.0 shows the pre-release README
-      ("Not published yet — from a clone"), because the README was corrected after
-      publishing and npm only refreshes it on a new version. Nothing else changes.
-      Ordering lesson: finish the README *before* `npm publish`, not after
-- [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
-      can only simulate. Everything else is now proven through a client
 - [ ] Report the requested-period defect upstream to the two existing LibreLink MCP servers
       (evidence and code excerpts are in ADR 0002 § Notes)
+- [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
+      can only simulate. Everything else is now proven through a client
 
 ## Ideas — to triage
 

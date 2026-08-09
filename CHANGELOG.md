@@ -8,6 +8,11 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-09
+
+Fixes a startup failure that an MCP client could only report as "Server disconnected", and
+refreshes the package page — 0.1.0 shipped a README describing the project as unpublished.
+
 ### Added
 - CI on push and pull request: typecheck and tests across Linux, macOS and Windows, plus a
   job that boots the built server on every Node version `engines` claims to support
@@ -21,6 +26,8 @@ versions follow [Semantic Versioning](https://semver.org/).
   the transport connected, so an MCP client could only report "Server disconnected". Config
   now resolves on first tool use and the failure arrives as a tool error the user can read
 - `npm test` used single quotes around its glob, which are not shell syntax on Windows
+- The npm package page now shows the real README; 0.1.0's tarball carried the pre-release
+  copy, and npm only refreshes it on a new version
 
 ## [0.1.0] - 2026-08-06
 
@@ -65,5 +72,6 @@ longer request.
 - Credentials are kept out of `claude_desktop_config.json`, which is world-readable, often
   synced, and routinely pasted into bug reports
 
-[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/lozit/mcp-freestyle/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/lozit/mcp-freestyle/releases/tag/v0.1.0
