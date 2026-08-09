@@ -3,6 +3,7 @@ import type { Reading, TargetRange } from "./domain/reading.ts";
 import { buildSeries } from "./domain/reading.ts";
 import type { FetchLike, Session } from "./upstream/librelinkup.ts";
 import { getConnection, getGraph, login } from "./upstream/librelinkup.ts";
+import { withRetry, type RetryOptions } from "./upstream/retry.ts";
 
 /**
  * Holds the upstream session across tool calls.
@@ -19,9 +20,18 @@ export class Client {
   private session: Session | null = null;
   private patientId: string | null = null;
 
-  constructor(config: LibreLinkUpConfig, fetchImpl: FetchLike = globalThis.fetch) {
+  /**
+   * Rate limiting and transient server errors are absorbed here rather than in
+   * each call: the transport is decorated once, so nothing downstream knows
+   * retry exists. `retry` is injectable so a test can supply a fake clock.
+   */
+  constructor(
+    config: LibreLinkUpConfig,
+    fetchImpl: FetchLike = globalThis.fetch,
+    retry: RetryOptions = {},
+  ) {
     this.config = config;
-    this.fetchImpl = fetchImpl;
+    this.fetchImpl = withRetry(fetchImpl, retry);
   }
 
   private async ensureSession(): Promise<Session> {

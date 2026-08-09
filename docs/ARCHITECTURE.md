@@ -54,6 +54,18 @@ upstream shapes; validates them; fails loudly on anything unexpected.
 network — the suite drives every branch (region redirect, token rotation, rate limiting,
 malformed payloads) against a stub.
 
+**Retry is a decorator on the transport**, not a parameter threaded through the calls: the
+`Client` wraps `fetch` once with `withRetry`, and nothing in `librelinkup.ts` knows it
+exists. Rate limiting (`429`, and the vendor-specific `430`) and transient server errors are
+retried with exponential backoff, honouring `Retry-After` when upstream sends it and clamping
+it either way. Other 4xx are not retried — a `401` will not fix itself, and asking again just
+burns the budget that caused the problem.
+
+A **thrown** error is not retried either, deliberately: when `fetch` rejects we cannot know
+whether the request landed, and `login` mints a token valid ~180 days with no revocation
+path. Replaying a request that may have succeeded risks orphaning one for six months. A
+status code proves the request failed; a throw does not.
+
 #### Verified upstream contract
 
 > Verified against a real account on **2026-08-06**, then exercised end to end the same day

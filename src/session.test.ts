@@ -157,6 +157,38 @@ test("history reuses a patient id already resolved by a current() call", async (
   assert.equal(urls.filter((url) => url.endsWith("/llu/connections")).length, 1);
 });
 
+test("absorbs a rate-limited response instead of failing the tool call", async () => {
+  // The unit tests cover `withRetry`; this proves the Client is actually wired
+  // to it, which is the part they cannot show.
+  const slept: number[] = [];
+  const responses: Array<{ status: number; body: unknown }> = [
+    { status: 200, body: loginBody() },
+    { status: 429, body: {} },
+    { status: 200, body: connectionsBody() },
+  ];
+
+  const fetchImpl: FetchLike = async () => {
+    const next = responses.shift();
+    assert.ok(next, "unexpected extra request");
+    return new Response(JSON.stringify(next.body), {
+      status: next.status,
+      headers: { "content-type": "application/json" },
+    });
+  };
+
+  const client = new Client(CONFIG, fetchImpl, {
+    sleep: async (ms) => {
+      slept.push(ms);
+    },
+  });
+
+  const { reading } = await client.current();
+
+  assert.equal(reading.mgPerDl, 123);
+  assert.equal(slept.length, 1, "should have waited once before retrying");
+  assert.equal(responses.length, 0, "all three responses consumed");
+});
+
 test("history appends the current reading to the graph samples", async () => {
   const { fetch } = stubFetch([loginBody(), connectionsBody(), graphBody()]);
   const client = new Client(CONFIG, fetch);

@@ -8,6 +8,11 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Rate-limited and transient upstream failures are retried with exponential backoff,
+  honouring `Retry-After`. Previously a single `429` failed the tool call outright and the
+  question had to be asked again
+
 ## [0.1.3] - 2026-08-09
 
 ### Fixed

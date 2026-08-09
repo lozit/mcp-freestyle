@@ -72,11 +72,14 @@ function headers(
 
 async function readJson(response: Response, what: string): Promise<Record<string, unknown>> {
   if (!response.ok) {
-    // 429 and the vendor-specific 430 both mean rate limiting.
+    // 429 and the vendor-specific 430 both mean rate limiting. Reaching here
+    // means the retries in `withRetry` were already spent, so say so — otherwise
+    // the obvious advice is "just try again", which has already happened.
     throw new UpstreamContractError(
       `${what} failed with HTTP ${response.status}` +
         (response.status === 429 || response.status === 430
-          ? " (rate limited — poll no faster than the ~15 min data cadence)"
+          ? " (rate limited, and still limited after retrying — wait a few minutes;" +
+            " upstream only produces new data every ~15 min)"
           : ""),
       { field: what, received: response.status },
     );
