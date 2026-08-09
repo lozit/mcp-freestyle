@@ -52,6 +52,21 @@ from it. They *document* the 12 h limit, but in the tool description the model r
 time, not in the response that asserts the period. **Disclosure in the schema does not
 substitute for honesty in the payload.**
 
+## 2026-08-09 — The MCP Registry needs `mcpName` inside the npm package
+
+**Why**: `server.json` was written and validated against the published schema, the registry
+accepted the OIDC login and validated the manifest — then rejected the publish because
+`package.json` lacked `"mcpName": "io.github.lozit/mcp-freestyle"`. That field is how the
+registry proves you own the npm package it is about to point at: it looks for its own name
+*inside* the package. Cost: an npm release that had already gone out and could not be
+amended, so the fix needed another version.
+
+**When to apply**: adding or renaming an MCP Registry entry. `server.json` and `package.json`
+are a **pair** — `server.json.name` must equal `package.json.mcpName`, and
+`server.json.packages[0].identifier` must equal `package.json.name`. `check-versions.mjs`
+asserts both, because the failure lands *after* `npm publish` in the pipeline, at the one
+point where nothing can be walked back.
+
 ## 2026-08-06 — An MCP server must start even when it is misconfigured
 
 **Why**: config was resolved at startup, so a missing keychain entry made the process exit

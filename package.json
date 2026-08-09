@@ -9,6 +9,7 @@
     "url": "git+https://github.com/lozit/mcp-freestyle.git"
   },
   "homepage": "https://github.com/lozit/mcp-freestyle#readme",
+  "mcpName": "io.github.lozit/mcp-freestyle",
   "bugs": "https://github.com/lozit/mcp-freestyle/issues",
   "type": "module",
   "engines": {

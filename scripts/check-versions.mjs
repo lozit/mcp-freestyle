@@ -43,4 +43,15 @@ if (server.packages?.[0]?.identifier !== pkg.name) {
   process.exit(1);
 }
 
+// The registry proves you own the npm package by finding its own name inside it.
+// Without this pairing `mcp-publisher publish` fails at the very last step, after
+// the npm release has already gone out and can no longer be amended.
+if (pkg.mcpName !== server.name) {
+  console.error(
+    `✖ package.json mcpName is ${pkg.mcpName ? `"${pkg.mcpName}"` : "missing"}, ` +
+      `but server.json declares "${server.name}". The MCP Registry rejects the pair.`,
+  );
+  process.exit(1);
+}
+
 console.log(`✔ ${distinct[0]} agrees across ${Object.keys(found).length} places`);
