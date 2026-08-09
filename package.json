@@ -1,6 +1,6 @@
 {
   "name": "mcp-freestyle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Model Context Protocol server that reads data from a FreeStyle glucose sensor.",
   "license": "MIT",
   "author": "Guillaume Ferrari <guillaume.ferrari@protonmail.com>",
