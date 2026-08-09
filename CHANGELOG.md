@@ -13,7 +13,8 @@ versions follow [Semantic Versioning](https://semver.org/).
   [MCP Registry](https://registry.modelcontextprotocol.io), making it discoverable from MCP
   clients rather than only from npm
 - `npm run check:versions` — the version lives in three places plus the git tag; CI checks
-  they agree on every push, not only at release time
+  they agree on every push, not only at release time. `npm version` syncs `server.json`
+  automatically, so releasing stays two commands
 
 ## [0.1.1] - 2026-08-09
 

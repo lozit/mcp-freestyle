@@ -25,17 +25,14 @@ the pipeline depends on it.
 #    README, CHANGELOG and LICENSE ship inside the tarball — npm only refreshes
 #    them on a new version, so they must be true *before* the tag.
 
-# 2. The version lives in three places. `npm version` only writes one of them.
-#    Edit server.json (`version` and `packages[0].version`) to match, then:
-npm run check:versions
-
-# 3. Bump, tag and push. `npm version` writes package.json and creates the tag.
+# 2. Bump, tag and push. The version lives in three places; npm's `version`
+#    hook syncs server.json and stages it, so all three land in one commit.
 npm version patch          # or minor / major
 git push --follow-tags
 ```
 
-> `check:versions` also runs in CI on every push, so drift between `package.json` and
-> `server.json` is caught long before a release rather than at the tag.
+> `check:versions` runs in that hook *and* in CI on every push, so drift between
+> `package.json` and `server.json` is caught long before a release rather than at the tag.
 
 The tag push triggers `publish.yml`, which:
 
