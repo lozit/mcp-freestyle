@@ -32,4 +32,5 @@ No ADR needed for trivial choices or implementation details.
 | 0000 | Template | — | — |
 | [0001](0001-stack-node-typescript.md) | Node/TypeScript as the implementation stack | Accepted | 2026-08-06 |
 | [0002](0002-data-source-librelinkup.md) | Read glucose data from the LibreLinkUp cloud API | Accepted | 2026-08-06 |
-| [0003](0003-nightscout-as-alternate-source.md) | Nightscout as an alternate source, not a collector to build | Accepted | 2026-08-06 |
+| [0003](0003-nightscout-as-alternate-source.md) | Nightscout as an alternate source, not a collector to build | Partially superseded by 0004 | 2026-08-06 |
+| [0004](0004-nightscout-belongs-in-its-own-project.md) | Nightscout belongs in its own project, if it is built at all | Accepted | 2026-08-10 |

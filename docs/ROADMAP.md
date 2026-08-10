@@ -51,20 +51,22 @@ export step, and without health data leaving the user's machine.
   in the OS keychain, no credential in the client config. The exit criterion is only half
   proven: the path works, but no third party has walked it yet
 
-### Milestone 4 — Long-term history via Nightscout
+### Milestone 4 — Decide whether long-term history is this project's problem
 
-- **Goal**: aggregates over days and weeks, which LibreLinkUp cannot serve directly
-- **Scope**: a **source interface** with Nightscout as a second adapter
-  ([ADR 0003](decisions/0003-nightscout-as-alternate-source.md)). We do **not** build a
-  collector — Nightscout already is one. LibreLinkUp-direct stays the zero-infrastructure
-  default path
-- **Exit criteria**: time-in-range over a full week from a Nightscout instance, with the
-  answer stating which source and which real range it covered
-- **Status**: Deferred — deliberately out of V1 (`docs/VISION.md`), revisit once Milestones
-  1–3 have shipped and the 12 h horizon has proven insufficient in practice
-- **Time-sensitive note**: Nightscout cannot backfill — it only holds history from its
-  install date. Anyone wanting long-term history should start running it well before this
-  milestone, not when it begins
+- **Goal**: settle where long-term history lives, with evidence rather than a hunch
+- **Scope**: **not** an adapter inside this project
+  ([ADR 0004](decisions/0004-nightscout-belongs-in-its-own-project.md)) — the tool surface
+  cannot state one honest horizon for two sources with different limits, and a package named
+  `mcp-freestyle` has no business reading Dexcom data. If a Nightscout server is built, it is
+  a separate project. Ten already exist, none above 4 stars
+- **Exit criteria**: an existing Nightscout MCP server has been pointed at a real instance and
+  asked for time in range over a week containing a sensor gap. Either the answer is honest —
+  and the best outcome is a project not written — or the measurement justifies writing one
+- **Status**: Deferred, and possibly never. The ~12 h horizon is a standing property of this
+  project, not a temporary one
+- **Time-sensitive, whatever the outcome**: Nightscout cannot backfill. It only holds history
+  from its install date, so every day of delay is a day permanently lost — and it is the
+  prerequisite for the evaluation above
 
 ## Out of scope (for now)
 

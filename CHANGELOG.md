@@ -8,6 +8,11 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- ADR 0004 supersedes half of ADR 0003: Nightscout support, if built, becomes a separate
+  project rather than a second source here. Milestone 4 becomes a decision to make with
+  evidence, not an adapter to write
+
 ### Added
 - Rate-limited and transient upstream failures are retried with exponential backoff,
   honouring `Retry-After`. Previously a single `429` failed the tool call outright and the

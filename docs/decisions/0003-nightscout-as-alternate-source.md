@@ -1,7 +1,13 @@
 # 0003 — Nightscout as an alternate source, not a collector to build
 
 **Date**: 2026-08-06
-**Status**: Accepted
+**Status**: Partially superseded by [ADR 0004](0004-nightscout-belongs-in-its-own-project.md)
+
+> **What still stands**: do not build a long-running collector — Nightscout already is one.
+>
+> **What is superseded**: placing Nightscout as a second source *inside this project*. ADR
+> 0004 moves it to a separate project, if it is built at all, because the tool surface cannot
+> state one honest history horizon for two sources with different limits.
 
 ## Context
 

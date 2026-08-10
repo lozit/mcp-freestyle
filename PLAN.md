@@ -20,6 +20,11 @@ This file differs from the long-term roadmap: it describes what is happening **n
       (evidence and code excerpts are in ADR 0002 § Notes)
 - [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
       can only simulate. Everything else is now proven through a client
+- [ ] **Install Nightscout** — the only item that loses value by waiting: it cannot backfill,
+      so every day of delay is a day of history permanently lost. Prerequisite for the
+      Milestone 4 evaluation (ADR 0004), whatever that concludes
+- [ ] Then point an existing Nightscout MCP server at it and ask for time in range over a
+      week containing a sensor gap. Honest answer → a project not written
 
 ## Ideas — to triage
 
