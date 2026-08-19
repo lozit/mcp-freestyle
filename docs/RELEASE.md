@@ -21,9 +21,11 @@ the pipeline depends on it.
 ## Cutting a release
 
 ```bash
-# 1. Land everything, including the CHANGELOG entry for the new version.
-#    README, CHANGELOG and LICENSE ship inside the tarball — npm only refreshes
-#    them on a new version, so they must be true *before* the tag.
+# 1. Move the [Unreleased] entries under a `## [x.y.z]` heading for the version
+#    you are about to cut. README, CHANGELOG and LICENSE ship inside the tarball
+#    and npm only refreshes them on a new version, so they must be true *before*
+#    the tag. `npm run check:changelog` verifies it, and the publish workflow
+#    refuses to release without it — this step was prose once and was forgotten.
 
 # 2. Bump, tag and push. The version lives in three places; npm's `version`
 #    hook syncs server.json and stages it, so all three land in one commit.

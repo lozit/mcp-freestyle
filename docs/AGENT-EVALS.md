@@ -23,6 +23,36 @@ descriptions or output.
 
 ---
 
+## 2026-08-19 — Third recurrence: a rule in prose does not fire
+
+**Observed**: told the user to cut a release without first moving the CHANGELOG entries out
+of `[Unreleased]`. `0.1.4` reached npm and the MCP Registry carrying a changelog that never
+mentions the version it ships with — permanently, since npm only refreshes the file on a new
+version.
+
+**Trigger**: a release that felt purely mechanical (`npm version patch && git push`), where
+the preparation step lived in `docs/RELEASE.md` rather than in the pipeline.
+
+**What makes this the interesting one**: the rule already existed, written by this agent on
+2026-08-06 in `docs/LEARNINGS.md` — *"README, CHANGELOG and LICENSE ship inside the tarball —
+treat them as release artefacts subject to the same is-this-true-right-now check as the code,
+not as things to tidy afterwards."* It was broken thirteen days later by its author.
+
+Compare the README, which had the **same** failure at 0.1.0 and got a **check in the publish
+workflow**. It has not recurred once. The CHANGELOG got a line of prose. It recurred.
+
+**Guard added**: `scripts/check-changelog.mjs`, wired into `publish.yml` beside the README
+check. The tagged version must have a `## [x.y.z]` section or the release stops before
+`npm publish`.
+
+**The generalisation, and it supersedes the advice in the two entries below**: when a failure
+mode recurs, the response is not a firmer note — it is moving the rule from prose into a
+check that runs. If a guard cannot be executed, assume it will be forgotten. Prose is for
+explaining *why* a check exists, not for being the check.
+
+**Status**: the mechanism is now enforced; watching whether the generalisation holds for the
+next class of failure.
+
 ## 2026-08-06 — Adds a second caller that routes around an existing guard
 
 **Observed**: `install.ts`'s `main()` checked `existsSync(paths.server)` before writing an

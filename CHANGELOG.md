@@ -8,15 +8,17 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Changed
-- ADR 0004 supersedes half of ADR 0003: Nightscout support, if built, becomes a separate
-  project rather than a second source here. Milestone 4 becomes a decision to make with
-  evidence, not an adapter to write
+## [0.1.4] - 2026-08-19
 
 ### Added
 - Rate-limited and transient upstream failures are retried with exponential backoff,
   honouring `Retry-After`. Previously a single `429` failed the tool call outright and the
   question had to be asked again
+
+### Changed
+- ADR 0004 supersedes half of ADR 0003: Nightscout support, if built, becomes a separate
+  project rather than a second source here. Milestone 4 becomes a decision to make with
+  evidence, not an adapter to write
 
 ## [0.1.3] - 2026-08-09
 
@@ -102,7 +104,8 @@ longer request.
 - Credentials are kept out of `claude_desktop_config.json`, which is world-readable, often
   synced, and routinely pasted into bug reports
 
-[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/lozit/mcp-freestyle/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/lozit/mcp-freestyle/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/lozit/mcp-freestyle/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/lozit/mcp-freestyle/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/lozit/mcp-freestyle/compare/v0.1.0...v0.1.1

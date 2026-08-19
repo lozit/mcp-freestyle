@@ -55,6 +55,13 @@ jobs:
             exit 1
           fi
 
+      # CHANGELOG.md ships in the tarball too, and a release whose notes are still
+      # filed under [Unreleased] publishes a changelog that never mentions the
+      # version it accompanies. 0.1.4 went out that way — the rule existed, only
+      # in prose (docs/AGENT-EVALS.md).
+      - name: CHANGELOG documents this version
+        run: node scripts/check-changelog.mjs
+
       - name: The built server starts
         run: node scripts/check-starts.mjs
 
