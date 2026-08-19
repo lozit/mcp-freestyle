@@ -16,12 +16,11 @@ This file differs from the long-term roadmap: it describes what is happening **n
 
 - [ ] **Map `TrendArrow`** — carried verbatim as `rawTrendArrow` and deliberately
       untranslated. Needs verification against a real account; do not guess the enum
-- [ ] **Observe a real collection gap.** `findGaps` is covered by synthetic series only —
-      on the day it was tested against the account there were none. Easiest deliberate
-      trigger: the next sensor change, whose warm-up is a known ~60 min hole
-      (`sensor.w: 60` in the payload). Run `npm run smoke` after it and check the gap is
-      reported with sane boundaries. Open question it settles: whether upstream simply
-      omits the missing samples or does something else
+- [ ] **Observe a real collection gap.** Still unseen: a run against a sensor with failing
+      Bluetooth (2026-08-19) showed 46 samples, none spaced over 15.53 min, zero gaps — the
+      app backfills once back in range, so connectivity trouble never surfaces
+      (`docs/LEARNINGS.md`). The remaining trigger is the **next sensor change**, whose
+      warm-up is a known ~60 min hole (`sensor.w: 60`). Run `npm run smoke` after it
 
 ## Ideas — to triage
 

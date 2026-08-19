@@ -12,6 +12,42 @@ Include the minimal code snippet / command when it is the fix.
 
 ---
 
+## 2026-08-19 — A Bluetooth outage does not produce a gap: the sensor backfills
+
+**Why**: observed against a real account with a sensor the user reported as faulty, its
+Bluetooth not working. Expectation was a visible hole; the 11.7 h window came back with
+**46 automatic samples, none spaced more than 15.53 min**, and zero gaps. Abbott's own
+support documentation explains it: the Libre 3 app backfills automatically once it is back in
+range of the sensor — no scan needed. The sensor buffers, the app fills in on reconnect, and
+the uploaded history ends up complete.
+
+**When to apply**: whenever reasoning about, testing, or explaining gap detection. It
+measures something **rarer** than day-to-day connectivity trouble. What actually produces a
+hole is the sensor not being read at all for long enough: warm-up after a change (~60 min,
+`sensor.w`), removal, outright failure, or an app that never reconnects before the buffer
+wraps. Transient loss of signal — by far the most common disruption — is invisible by design.
+
+**Side effect worth keeping**: this validates the 31-minute threshold rather than changing
+it. Real gaps are ≥60 min, and the largest genuine sample interval observed across three runs
+is 15.53 min, so the threshold sits with wide margin on both sides. The 24-minute figure the
+smoke test prints is the graph-to-current join, which `findGaps` already excludes (19, 24 and
+25 min observed — the lag is variable, hence the exclusion rather than a bigger threshold).
+
+## 2026-08-09 — The MCP Registry needs `mcpName` inside the npm package
+
+**Why**: `server.json` was written and validated against the published schema, the registry
+accepted the OIDC login and validated the manifest — then rejected the publish because
+`package.json` lacked `"mcpName": "io.github.lozit/mcp-freestyle"`. That field is how the
+registry proves you own the npm package it is about to point at: it looks for its own name
+*inside* the package. Cost: an npm release that had already gone out and could not be
+amended, so the fix needed another version.
+
+**When to apply**: adding or renaming an MCP Registry entry. `server.json` and `package.json`
+are a **pair** — `server.json.name` must equal `package.json.mcpName`, and
+`server.json.packages[0].identifier` must equal `package.json.name`. `check-versions.mjs`
+asserts both, because the failure lands *after* `npm publish` in the pipeline, at the one
+point where nothing can be walked back.
+
 ## 2026-08-06 — LibreLinkUp: parse `FactoryTimestamp` as UTC, and never `new Date(str)`
 
 **Why**: upstream readings carry two unmarked date strings in US format
@@ -51,21 +87,6 @@ alongside statistics computed from ~12 h, and derive GMI — an HbA1c proxy need
 from it. They *document* the 12 h limit, but in the tool description the model reads at call
 time, not in the response that asserts the period. **Disclosure in the schema does not
 substitute for honesty in the payload.**
-
-## 2026-08-09 — The MCP Registry needs `mcpName` inside the npm package
-
-**Why**: `server.json` was written and validated against the published schema, the registry
-accepted the OIDC login and validated the manifest — then rejected the publish because
-`package.json` lacked `"mcpName": "io.github.lozit/mcp-freestyle"`. That field is how the
-registry proves you own the npm package it is about to point at: it looks for its own name
-*inside* the package. Cost: an npm release that had already gone out and could not be
-amended, so the fix needed another version.
-
-**When to apply**: adding or renaming an MCP Registry entry. `server.json` and `package.json`
-are a **pair** — `server.json.name` must equal `package.json.mcpName`, and
-`server.json.packages[0].identifier` must equal `package.json.name`. `check-versions.mjs`
-asserts both, because the failure lands *after* `npm publish` in the pipeline, at the one
-point where nothing can be walked back.
 
 ## 2026-08-06 — An MCP server must start even when it is misconfigured
 

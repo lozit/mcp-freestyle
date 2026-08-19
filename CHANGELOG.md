@@ -9,6 +9,9 @@ versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- Gap detection documented as measuring something rarer than assumed: a Bluetooth outage does
+  not produce one, because the sensor backfills on reconnect (`docs/LEARNINGS.md`). No code
+  change — the observation validates the existing threshold
 - Milestone 4 closed: long-term history is settled as out of scope for this project, and the
   ~12 h horizon stops being provisional (`docs/ROADMAP.md`, ADR 0004)
 
