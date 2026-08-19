@@ -16,15 +16,12 @@ This file differs from the long-term roadmap: it describes what is happening **n
 
 - [ ] **Map `TrendArrow`** — carried verbatim as `rawTrendArrow` and deliberately
       untranslated. Needs verification against a real account; do not guess the enum
-- [ ] Report the requested-period defect upstream to the two existing LibreLink MCP servers
-      (evidence and code excerpts are in ADR 0002 § Notes)
-- [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
-      can only simulate. Everything else is now proven through a client
-- [ ] **Evaluate `b77ai/nightscout` against the real instance** (ADR 0004 exit criterion).
-      Use a Nightscout token with the `readable` role only — its write tools cannot be
-      disabled and one of them edits basal rates, ISF and carb ratios. Three probes:
-      time in range over 3 months (the data does not exist), an HbA1c estimate on a
-      short history, and a day containing a real sensor gap
+- [ ] **Observe a real collection gap.** `findGaps` is covered by synthetic series only —
+      on the day it was tested against the account there were none. Easiest deliberate
+      trigger: the next sensor change, whose warm-up is a known ~60 min hole
+      (`sensor.w: 60` in the payload). Run `npm run smoke` after it and check the gap is
+      reported with sane boundaries. Open question it settles: whether upstream simply
+      omits the missing samples or does something else
 
 ## Ideas — to triage
 

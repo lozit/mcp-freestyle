@@ -90,15 +90,14 @@ it is no longer the glaring defect it corrects upstream.
 
 ## Notes
 
-**Next step, and it is time-sensitive**: install Nightscout regardless of the outcome. It
-cannot backfill — it only holds history from its install date, so every day of delay is a day
-of history permanently lost. It is also the prerequisite for evaluating any of the existing
-servers.
+**Followed up 2026-08-19**: Nightscout was installed and is accumulating. The evaluation it
+unblocks — pointing an existing server at it and asking for time in range over a week
+containing a real sensor gap — has moved **out of this repository**, which is the natural
+consequence of this ADR: the question belongs wherever the separate project would live, not
+here. `docs/ROADMAP.md` Milestone 4 is closed accordingly.
 
-Then point an existing server at it and ask what this project's tools are asked: time in
-range over a week containing a real sensor gap. If the answer is honest, the best outcome is
-a project not written. If it is not, that measurement justifies the eleventh server the way
-ADR 0002 § Notes justifies this one.
+Nothing in `mcp-freestyle` depends on the answer. Its ~12 h horizon stops being provisional
+and becomes a standing property of the project.
 
 - ADR 0003 stands on its first decision: no collector is to be written.
 - Related: `docs/VISION.md` (V1 non-goals), `docs/ROADMAP.md` Milestone 4.

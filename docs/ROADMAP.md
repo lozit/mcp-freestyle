@@ -51,22 +51,16 @@ export step, and without health data leaving the user's machine.
   in the OS keychain, no credential in the client config. The exit criterion is only half
   proven: the path works, but no third party has walked it yet
 
-### Milestone 4 — Decide whether long-term history is this project's problem
+### Milestone 4 — Long-term history: closed, not this project's problem
 
-- **Goal**: settle where long-term history lives, with evidence rather than a hunch
-- **Scope**: **not** an adapter inside this project
-  ([ADR 0004](decisions/0004-nightscout-belongs-in-its-own-project.md)) — the tool surface
-  cannot state one honest horizon for two sources with different limits, and a package named
-  `mcp-freestyle` has no business reading Dexcom data. If a Nightscout server is built, it is
-  a separate project. Ten already exist, none above 4 stars
-- **Exit criteria**: an existing Nightscout MCP server has been pointed at a real instance and
-  asked for time in range over a week containing a sensor gap. Either the answer is honest —
-  and the best outcome is a project not written — or the measurement justifies writing one
-- **Status**: Deferred, and possibly never. The ~12 h horizon is a standing property of this
-  project, not a temporary one
-- **Time-sensitive, whatever the outcome**: Nightscout cannot backfill. It only holds history
-  from its install date, so every day of delay is a day permanently lost — and it is the
-  prerequisite for the evaluation above
+- **Outcome**: [ADR 0004](decisions/0004-nightscout-belongs-in-its-own-project.md) settled
+  that a Nightscout server, if built, is a separate project. The evaluation that would decide
+  whether to build one has moved out of this repository (2026-08-19), so the milestone closes
+  here rather than staying open indefinitely
+- **What this makes permanent**: the ~12 h horizon is a standing property of `mcp-freestyle`,
+  not a temporary limitation. `docs/VISION.md` already lists long-term history as a non-goal;
+  this is the point at which that stops being provisional
+- **Status**: **Closed** — reopen only if the separate project appears and gives a reason to
 
 ## Out of scope (for now)
 

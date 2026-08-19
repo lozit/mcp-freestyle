@@ -8,6 +8,10 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Milestone 4 closed: long-term history is settled as out of scope for this project, and the
+  ~12 h horizon stops being provisional (`docs/ROADMAP.md`, ADR 0004)
+
 ## [0.1.4] - 2026-08-19
 
 ### Added
