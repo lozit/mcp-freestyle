@@ -20,11 +20,11 @@ This file differs from the long-term roadmap: it describes what is happening **n
       (evidence and code excerpts are in ADR 0002 § Notes)
 - [ ] Exercise the history tool on a day with a real collection gap — the one path the tests
       can only simulate. Everything else is now proven through a client
-- [ ] **Install Nightscout** — the only item that loses value by waiting: it cannot backfill,
-      so every day of delay is a day of history permanently lost. Prerequisite for the
-      Milestone 4 evaluation (ADR 0004), whatever that concludes
-- [ ] Then point an existing Nightscout MCP server at it and ask for time in range over a
-      week containing a sensor gap. Honest answer → a project not written
+- [ ] **Evaluate `b77ai/nightscout` against the real instance** (ADR 0004 exit criterion).
+      Use a Nightscout token with the `readable` role only — its write tools cannot be
+      disabled and one of them edits basal rates, ISF and carb ratios. Three probes:
+      time in range over 3 months (the data does not exist), an HbA1c estimate on a
+      short history, and a day containing a real sensor gap
 
 ## Ideas — to triage
 
@@ -38,9 +38,10 @@ Raw ideas, captured before they're lost (e.g. via `/groundrules:idea`). Not yet 
 
 ## Recently done
 
+- [x] Nightscout installed and accumulating (2026-08-19) — the only time-sensitive item,
+      since it cannot backfill. Unblocks the Milestone 4 evaluation
 - [x] Retry on rate-limited and transient upstream failures (2026-08-09) — composed as a
       decorator on the transport, so no call signature changed and no existing test moved
-
 - [x] **Published** (2026-08-06) — `mcp-freestyle@0.1.0` on npm and the repo public at
       github.com/lozit/mcp-freestyle. A clean `npx` install from the registry starts and
       serves both tools, which is the first time the third-party path has been walked at all
